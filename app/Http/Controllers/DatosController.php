@@ -3,33 +3,49 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Validator;
 
 class DatosController extends Controller
 {
+    
+
     function procesar(Request $request)
     {
-        $validar = Validator::make($request->all(), [
-         'nombre'  => 'required|string'
-        ,'edad'    => 'required|integer'
-        
-        ]);
+        if ($request->isMethod('post')) {
+       
 
-        if ($validar->fails()) {
-        // La validación ha fallado
-        return response()->json([
-         'message' => 'Los datos no son válidos'
-        ,'errors' => $validar->errors()
-        ], 400);
+            $data = [
+                'nombre' => $request->input('nombre'),
+                'edad'  => $request->input('edad'),
+            ];
+            $rules = [
+                'nombre' => 'required|string|max:255',
+                'edad' => 'required|int',
+
+            ];
+            $validator = Validator::make($data, $rules);
+
+            if ($validator->fails()) {
+                // La validación ha fallado
+                return response()->json([
+                'message' => 'Los datos no son válidos',
+                'errors' => $validator->errors()
+                ], 400);
+            }
+            else{
+
+                return "Hola, [". $request->input('nombre')."]. Tienes [". $request->input('edad') ."] años.";
+            }
+
+
         }
+        else{
 
-        $nombre = $request->input('nombre');
-        $edad   = $request->input('edad');
+            return view('formulario');
 
-        return response()->json([
-            'message' => "Hola, $nombre. Tienes $edad años."
-        ], 200);
 
+        }
 
     }
 }
