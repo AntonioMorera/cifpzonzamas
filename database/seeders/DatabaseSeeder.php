@@ -35,6 +35,12 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('2daw.pass'),
         ]);
 
+        User::factory()->create([
+            'name' => 'antonio',
+            'email' => 'antoniomorera784@gmail.com',
+            'password' => Hash::make('lanza.pass'),
+        ]);
+
         $libro = new Libro();
         $libro->titulo = 'El eco del silencio';
         $libro->autor = 'María López';
