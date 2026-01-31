@@ -11,11 +11,16 @@ class LibroController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $libros = Libro::paginate(10);
+        $cods_genero = Libro::$cods_genero;
 
-        return view('libros.index',['libros' => $libros,'cods_genero' => Libro::$cods_genero]);
+        if ($request->ajax()) {
+            return view('libros.partials.list', compact('libros', 'cods_genero'));
+        }
+
+        return view('libros.index', compact('libros', 'cods_genero'));
     }
 
     /**
