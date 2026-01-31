@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Models\Libro;
 
 class LibroController extends Controller
@@ -71,15 +70,9 @@ class LibroController extends Controller
      */
     public function show(string $id)
     {
-        Log::info("Mostrando libro con ID: $id");
 
         $libro = Libro::find($id);
-        Log::info($libro);
 
-        if (!$libro) {
-            Log::error("Libro con ID $id no encontrado");
-            abort(404, 'Libro no encontrado');
-        }
 
         $datos = ['exito' => ''];
 
