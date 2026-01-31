@@ -22,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(Router $router): void
     {
         Paginator::useBootstrapFive(); // <---
-        $router->aliasMiddleware('role',
-\Spatie\Permission\Middleware\RoleMiddleware::class);
+        $router->aliasMiddleware('role', \Spatie\Permission\Middleware\RoleMiddleware::class);
     }
 }
