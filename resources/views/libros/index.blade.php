@@ -1,6 +1,3 @@
-@extends('layout')
-@section('title', 'Listado de libros')
-@section('contenido')
 
 <div class="container pt-4">
 
@@ -15,16 +12,12 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($libros as $libro)       
-            
-
-
+            @foreach ($libros as $libro)
                 <tr>
                     <th>
-                        <a href="/libro/show/{{ $libro->id }}" class="btn btn-primary"><i class="bi bi-search"></i></a>
-                        <a href="/libro/edit/{{ $libro->id }}" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
-                        <a href="/libro/destroy/{{ $libro->id }}" class="btn btn-danger"><i class="bi bi-trash"></i></a>
-
+                        <a class="btn btn-primary btn-modal" data-url="/libro/show/{{ $libro->id }}"><i class="bi bi-search"></i></a>
+                        <a class="btn btn-success btn-modal" data-url="/libro/edit/{{ $libro->id }}"><i class="bi bi-pencil-square"></i></a>
+                        <a class="btn btn-danger btn-modal"  data-url="/libro/destroy/{{ $libro->id }}"><i class="bi bi-trash"></i></a>
                     </th>
                     <td>{{ $libro->titulo }}</td>
                     <td>{{ $libro->autor }}</td>
@@ -32,18 +25,13 @@
                     <td>{{ $libro->anho }}</td>
                 </tr>
             @endforeach
-
-            {{ $libros->links() }}
-
-
-
         </tbody>
     </table>
 
-    <a class="btn btn-primary" href="{{ route('libro.create') }}">Nuevo Libro</a>
 
+    {{ $libros->links() }}
 
+    <a class="btn btn-primary btn-modal" data-url="{{ route('libro.create') }}">Nuevo Libro</a>
 
 </div>
 
-@endsection

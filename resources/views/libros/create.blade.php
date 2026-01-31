@@ -1,7 +1,3 @@
-@extends('layout')
-@section('title', 'Formulario de libro')
-@section('contenido')
-
 <div class="container pt-4">
     <ul>
     @foreach ($errors->all() as $error)
@@ -17,7 +13,7 @@
 
 
 
-    <form action="/libro/{{ $oper }}" method="POST">
+    <form action="{{ route('libro.edit.post', $libro->id) }}" method="POST">
 
         @csrf
 
@@ -106,6 +102,6 @@
         @endif
     </form>
     
-    <a class="btn btn-info mt-3" href="{{ route('libro.index') }}">Volver</a>
+    <button type="button" class="btn btn-info mt-3" data-bs-dismiss="modal">Volver</button>
 </div>
-@endsection
+

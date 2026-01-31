@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\Libro;
 
 class LibroController extends Controller
@@ -16,9 +16,6 @@ class LibroController extends Controller
         $libros = Libro::paginate(10);
         $cods_genero = Libro::$cods_genero;
 
-        if ($request->ajax()) {
-            return view('libros.partials.list', compact('libros', 'cods_genero'));
-        }
 
         return view('libros.index', compact('libros', 'cods_genero'));
     }
@@ -74,66 +71,73 @@ class LibroController extends Controller
      */
     public function show(string $id)
     {
+        Log::info("Mostrando libro con ID: $id");
+
+        $libro = Libro::find($id);
+        Log::info($libro);
+
+        if (!$libro) {
+            Log::error("Libro con ID $id no encontrado");
+            abort(404, 'Libro no encontrado');
+        }
 
         $datos = ['exito' => ''];
-        $libro = Libro::find($id);
 
-        return view('libros.create',['libro' => $libro,'datos' => $datos,'cods_genero' => Libro::$cods_genero, 'disabled' => 'disabled','oper' => 'show']);
+        return view('libros.create',[
+            'libro' => $libro,
+            'datos' => $datos,
+            'cods_genero' => Libro::$cods_genero,
+            'disabled' => 'disabled',
+            'oper' => 'show'
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request,string $id='')
+    public function edit(Request $request, string $id)
     {
-        if ($request->isMethod('post')) {   
+        $libro = Libro::find($id);
+        $disabled = '';
+        $datos['exito'] = '';
 
+        if ($request->isMethod('post')) {
             $validated = $request->validate([
-                'titulo'      => 'required|string|max:255',
-                'autor'       => 'required|string|max:255',
-                'anho'        => 'required|integer',
-                'genero'      => 'required|string|max:255',
+                'titulo' => 'required|string|max:255',
+                'autor' => 'required|string|max:255',
+                'anho' => 'required|integer',
+                'genero' => 'required|string|max:255',
                 'descripcion' => 'required|string|max:1255',
             ]);
 
-            /*
-            $datos_save = [];
-            
-            $datos_save['titulo']       = $request->input('titulo');;
-            $datos_save['autor']        = $request->input('autor');;
-            $datos_save['anho']         = $request->input('anho');;
-            $datos_save['genero']       = $request->input('genero');;
-            $datos_save['descripcion']  = $request->input('descripcion');
-
-
-            Libro::where('id',$request->input('id'))->update($datos_save);
-
-            */
-
-            $libro = Libro::find($request->input('id'));
-
-            
-            $libro->titulo      = $request->input('titulo');;
-            $libro->autor       = $request->input('autor');;
-            $libro->anho        = $request->input('anho');;
-            $libro->genero      = $request->input('genero');;
+            $libro->titulo = $request->input('titulo');
+            $libro->autor = $request->input('autor');
+            $libro->anho = $request->input('anho');
+            $libro->genero = $request->input('genero');
             $libro->descripcion = $request->input('descripcion');
+            $libro->save();
 
-            $libro->save();   
-            
-            $datos['exito'] = 'Operación realiza correctamente';
-            
+            $datos['exito'] = 'Operación realizada correctamente';
             $disabled = 'disabled';
-        }
-        else
-        {
-            $datos = ['exito' => ''];
-            $libro = Libro::find($id);
-            $disabled = '';
+
+            // Si es AJAX, devolvemos JSON
+            if ($request->ajax()) {
+                return response()->json([
+                    'exito' => $datos['exito']
+                ]);
+            }
         }
 
-        return view('libros.create',['libro' => $libro,'datos' => $datos,'cods_genero' => Libro::$cods_genero, 'disabled' => $disabled,'oper' => 'edit']);
+        return view('libros.create', [
+            'libro' => $libro,
+            'datos' => $datos,
+            'cods_genero' => Libro::$cods_genero,
+            'disabled' => $disabled,
+            'oper' => 'edit'
+        ]);
     }
+
+
 
     /**
      * Update the specified resource in storage.
